@@ -26001,3 +26001,60 @@ kcc['serverSeparator'] = (S, T) => {
     }
     return T;
 };
+/* === Modern UI panel trigger patch (non-obfuscated) === */
+(function () {
+    'use strict';
+
+    const HOTKEY = 'F8';
+    const PROFILE_LINK_SELECTOR = 'a[href^="/profile/"]';
+    const PROFILE_IMAGE_FALLBACK = '.UA3TP image, .UA3TP img';
+    const HEADER_FALLBACK = 'header.MuiAppBar-root';
+
+    function getConsoleEl() {
+        return document.getElementById('console');
+    }
+
+    function setConsoleVisible(visible) {
+        const panel = getConsoleEl();
+        if (!panel) return false;
+        panel.style.display = visible ? 'block' : 'none';
+        return true;
+    }
+
+    function toggleConsole() {
+        const panel = getConsoleEl();
+        if (!panel) return false;
+        const isHidden = getComputedStyle(panel).display === 'none';
+        return setConsoleVisible(isHidden);
+    }
+
+    function isProfileTriggerTarget(target) {
+        if (!(target instanceof Element)) return false;
+
+        if (target.closest(PROFILE_LINK_SELECTOR)) return true;
+        if (target.closest(PROFILE_IMAGE_FALLBACK)) return true;
+
+        // conservative fallback: allow right click in header only if explicitly desired
+        // by clicking a profile-related element. Avoid opening on any random header click.
+        if (target.closest(HEADER_FALLBACK) && target.closest('[title*="Profile"], [aria-label*="Profile"], [href^="/profile/"]')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    document.addEventListener('contextmenu', function (event) {
+        if (!isProfileTriggerTarget(event.target)) return;
+        if (setConsoleVisible(true)) {
+            event.preventDefault();
+        }
+    }, true);
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key !== HOTKEY) return;
+        if (toggleConsole()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    }, true);
+})();
