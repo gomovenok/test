@@ -7,6 +7,9 @@
 // @match			https://www.kogama.com/page/webgl-frame/*
 // @match			https://kogama.com.br/page/webgl-frame/*
 // @match			https://friends.kogama.com/page/webgl-frame/*
+// @match			https://www.kogama.com/games/play/*
+// @match			https://kogama.com.br/games/play/*
+// @match			https://friends.kogama.com/games/play/*
 // @grant           none
 // ==/UserScript==
 
